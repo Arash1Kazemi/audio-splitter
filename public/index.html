@@ -4,8 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Audio Splitter</title>
+  <title>Audio Splitter </title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
     * {
       margin: 0;
       padding: 0;
@@ -13,67 +15,191 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated background particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 20s infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+      }
+
+      25% {
+        transform: translateY(-100px) translateX(50px) rotate(90deg);
+      }
+
+      50% {
+        transform: translateY(-200px) translateX(-50px) rotate(180deg);
+      }
+
+      75% {
+        transform: translateY(-100px) translateX(100px) rotate(270deg);
+      }
     }
 
     .container {
-      background: white;
-      border-radius: 12px;
-      padding: 40px;
-      max-width: 700px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 50px;
+      max-width: 800px;
       width: 100%;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 1;
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      font-size: 60px;
+      margin-bottom: 10px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
     }
 
     h1 {
-      text-align: center;
       color: #333;
       margin-bottom: 10px;
-      font-size: 32px;
+      font-size: 36px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .subtitle {
-      text-align: center;
       color: #666;
-      margin-bottom: 30px;
-      font-size: 14px;
+      font-size: 16px;
+      font-weight: 400;
     }
 
     .upload-area {
-      border: 2px dashed #667eea;
-      border-radius: 8px;
-      padding: 40px;
+      border: 3px dashed #667eea;
+      border-radius: 16px;
+      padding: 50px;
       text-align: center;
-      margin-bottom: 25px;
+      margin-bottom: 30px;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .upload-area::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 16px;
+      opacity: 0;
+      transition: opacity 0.4s;
+      z-index: -1;
     }
 
     .upload-area:hover {
-      background: #f8f9ff;
-      border-color: #764ba2;
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+    }
+
+    .upload-area:hover::before {
+      opacity: 0.1;
     }
 
     .upload-area.dragging {
-      background: #f0f0ff;
       border-color: #764ba2;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+      transform: scale(1.02);
+    }
+
+    .upload-icon {
+      font-size: 64px;
+      margin-bottom: 15px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
     }
 
     .upload-area p {
-      font-size: 16px;
+      font-size: 18px;
       color: #333;
+      font-weight: 600;
+      margin-bottom: 8px;
     }
 
     .upload-area .hint {
-      font-size: 12px;
+      font-size: 14px;
       color: #666;
-      margin-top: 10px;
     }
 
     input[type="file"] {
@@ -81,193 +207,347 @@
     }
 
     .settings {
-      background: #f8f9ff;
-      padding: 25px;
-      border-radius: 8px;
-      margin-bottom: 25px;
+      background: linear-gradient(135deg, #f8f9ff, #fff5f8);
+      padding: 30px;
+      border-radius: 16px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
 
     .settings h3 {
       color: #333;
-      margin-bottom: 20px;
-      font-size: 18px;
+      margin-bottom: 25px;
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    @media (max-width: 600px) {
+      .settings-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .setting-group {
-      margin-bottom: 20px;
-    }
-
-    .setting-group:last-child {
-      margin-bottom: 0;
+      position: relative;
     }
 
     .setting-group label {
       display: block;
       color: #555;
-      margin-bottom: 8px;
-      font-weight: 500;
+      margin-bottom: 10px;
+      font-weight: 600;
       font-size: 14px;
     }
 
-    .input-wrapper {
+    .input-container {
+      position: relative;
+    }
+
+    .input-container input[type="number"] {
+      width: 100%;
+      padding: 14px 50px 14px 18px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s;
+      background: white;
+    }
+
+    .input-container input[type="number"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .input-container .unit {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+      font-size: 14px;
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    .info-text {
+      font-size: 12px;
+      color: #888;
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    .upload-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 18px 40px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 600;
+      transition: all 0.3s;
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .upload-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .upload-btn:hover:not(:disabled)::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .upload-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5);
+    }
+
+    .upload-btn:active:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .upload-btn:disabled {
+      background: linear-gradient(135deg, #ccc, #aaa);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .status {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 500;
+      animation: fadeIn 0.4s;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .status.success {
+      background: linear-gradient(135deg, #d4edda, #c3e6cb);
+      color: #155724;
+      border: 2px solid #c3e6cb;
+    }
+
+    .status.error {
+      background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+      color: #721c24;
+      border: 2px solid #f5c6cb;
+    }
+
+    .status.processing {
+      background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+      color: #856404;
+      border: 2px solid #ffeaa7;
+    }
+
+    .results {
+      margin-top: 35px;
+      animation: fadeIn 0.6s;
+    }
+
+    .results h2 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .results-info {
+      background: linear-gradient(135deg, #e8f4f8, #d4ebf5);
+      padding: 15px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #0c5460;
+      border-left: 4px solid #17a2b8;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .results-info span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .results-info strong {
+      font-weight: 700;
+    }
+
+    .parts-container {
+      display: grid;
+      gap: 12px;
+    }
+
+    .part-item {
+      background: white;
+      padding: 18px 20px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 2px solid #f0f0f0;
+      transition: all 0.3s;
+      animation: slideIn 0.4s ease-out backwards;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .part-item:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .part-item:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .part-item:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .part-item:nth-child(4) {
+      animation-delay: 0.25s;
+    }
+
+    .part-item:nth-child(5) {
+      animation-delay: 0.3s;
+    }
+
+    .part-item:hover {
+      border-color: #667eea;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+      transform: translateX(5px);
+    }
+
+    .part-info {
+      flex: 1;
       display: flex;
       align-items: center;
       gap: 15px;
     }
 
-    .input-wrapper input[type="number"] {
-      flex: 1;
-      padding: 10px 15px;
-      border: 2px solid #ddd;
-      border-radius: 6px;
-      font-size: 16px;
-      transition: border-color 0.3s;
-    }
-
-    .input-wrapper input[type="number"]:focus {
-      outline: none;
-      border-color: #667eea;
-    }
-
-    .input-wrapper .unit {
-      color: #666;
-      font-size: 14px;
-      min-width: 60px;
-    }
-
-    .info-text {
-      font-size: 12px;
-      color: #666;
-      margin-top: 5px;
-      font-style: italic;
-    }
-
-    .upload-btn {
-      background: #667eea;
+    .part-number {
+      background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
-      padding: 14px 40px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      transition: all 0.3s;
-      width: 100%;
-    }
-
-    .upload-btn:hover:not(:disabled) {
-      background: #764ba2;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-    }
-
-    .upload-btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .status {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 6px;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    .status.success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-
-    .status.error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-
-    .status.processing {
-      background: #fff3cd;
-      color: #856404;
-      border: 1px solid #ffeaa7;
-    }
-
-    .results {
-      margin-top: 30px;
-    }
-
-    .results h2 {
-      color: #333;
-      margin-bottom: 10px;
-      font-size: 20px;
-    }
-
-    .results-info {
-      background: #e8f4f8;
-      padding: 12px;
-      border-radius: 6px;
-      margin-bottom: 15px;
-      font-size: 13px;
-      color: #0c5460;
-    }
-
-    .results-info strong {
-      font-weight: 600;
-    }
-
-    .part-item {
-      background: #f8f9ff;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 6px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      border: 1px solid #e0e0e0;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
     }
 
-    .part-info {
+    .part-details {
       flex: 1;
     }
 
     .part-name {
-      font-weight: 600;
+      font-weight: 700;
       color: #333;
-      font-size: 14px;
+      font-size: 15px;
+      margin-bottom: 4px;
     }
 
     .part-time {
-      font-size: 12px;
+      font-size: 13px;
       color: #666;
-      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
     .download-btn {
-      background: #28a745;
+      background: linear-gradient(135deg, #28a745, #20c997);
       color: white;
-      padding: 8px 20px;
+      padding: 10px 24px;
       border: none;
-      border-radius: 5px;
+      border-radius: 10px;
       cursor: pointer;
       text-decoration: none;
       font-size: 14px;
-      font-weight: 500;
-      transition: background 0.3s;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
     }
 
     .download-btn:hover {
-      background: #218838;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .download-btn:active {
+      transform: translateY(0);
+    }
+
+    .loader-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
     }
 
     .loader {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #667eea;
+      width: 60px;
+      height: 60px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #667eea;
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
       animation: spin 1s linear infinite;
-      margin: 20px auto;
     }
 
     @keyframes spin {
@@ -280,58 +560,145 @@
       }
     }
 
-    .preview {
-      background: #fff9e6;
-      padding: 15px;
-      border-radius: 6px;
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      overflow: hidden;
       margin-top: 15px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      width: 0%;
+      transition: width 0.3s;
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -200px 0;
+      }
+
+      100% {
+        background-position: 200px 0;
+      }
+    }
+
+    .preview {
+      background: linear-gradient(135deg, #fff9e6, #fff3cd);
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
       border-left: 4px solid #ffc107;
+      animation: fadeIn 0.4s;
     }
 
     .preview h4 {
       color: #856404;
-      margin-bottom: 10px;
-      font-size: 14px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .preview-item {
-      font-size: 12px;
+      font-size: 13px;
       color: #856404;
-      padding: 3px 0;
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .preview-item::before {
+      content: '▸';
+      color: #ffc107;
+      font-weight: bold;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      margin-left: 8px;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 30px 25px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .upload-area {
+        padding: 40px 20px;
+      }
+
+      .part-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .download-btn {
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 
 <body>
+  <!-- Background particles -->
+  <div class="particles" id="particles"></div>
+
   <div class="container">
-    <h1>🎵 Audio Splitter</h1>
-    <p class="subtitle">Split any audio file into overlapping segments</p>
+    <div class="header">
+      <div class="logo">🎵</div>
+      <h1>Audio Splitter Pro</h1>
+      <p class="subtitle">Split any audio file into overlapping segments with precision</p>
+    </div>
 
     <div class="upload-area" id="uploadArea">
-      <p>📁 Click or drag audio file here</p>
-      <p class="hint">Supported formats: MP3, WAV, M4A, OGG, FLAC</p>
+      <div class="upload-icon">📁</div>
+      <p>Click or drag audio file here</p>
+      <p class="hint">Supported: MP3, WAV, M4A, OGG, FLAC</p>
       <input type="file" id="audioFile" accept="audio/*">
     </div>
 
     <div class="settings">
-      <h3>⚙️ Split Settings</h3>
+      <h3>⚙️ Split Configuration</h3>
 
-      <div class="setting-group">
-        <label for="segmentDuration">Segment Duration</label>
-        <div class="input-wrapper">
-          <input type="number" id="segmentDuration" value="20" min="1" max="300">
-          <span class="unit">seconds</span>
+      <div class="settings-grid">
+        <div class="setting-group">
+          <label for="segmentDuration">Segment Duration</label>
+          <div class="input-container">
+            <input type="number" id="segmentDuration" value="20" min="1" max="300">
+            <span class="unit">sec</span>
+          </div>
+          <p class="info-text">Length of each audio segment</p>
         </div>
-        <p class="info-text">Length of each audio segment</p>
-      </div>
 
-      <div class="setting-group">
-        <label for="overlapDuration">Overlap Duration</label>
-        <div class="input-wrapper">
-          <input type="number" id="overlapDuration" value="5" min="0" max="60">
-          <span class="unit">seconds</span>
+        <div class="setting-group">
+          <label for="overlapDuration">Overlap Duration</label>
+          <div class="input-container">
+            <input type="number" id="overlapDuration" value="5" min="0" max="60">
+            <span class="unit">sec</span>
+          </div>
+          <p class="info-text">Overlap between segments</p>
         </div>
-        <p class="info-text">How much segments overlap with each other</p>
       </div>
 
       <div class="preview" id="previewArea" style="display: none;">
@@ -340,13 +707,32 @@
       </div>
     </div>
 
-    <button class="upload-btn" id="uploadBtn" disabled>Split Audio</button>
+    <button class="upload-btn" id="uploadBtn" disabled>
+      <span>✨ Split Audio</span>
+    </button>
 
     <div id="status"></div>
     <div id="results"></div>
   </div>
 
   <script>
+    // Create background particles
+    function createParticles() {
+      const particles = document.getElementById('particles');
+      for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.width = Math.random() * 100 + 20 + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 20 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+        particles.appendChild(particle);
+      }
+    }
+    createParticles();
+
     const uploadArea = document.getElementById('uploadArea');
     const audioFile = document.getElementById('audioFile');
     const uploadBtn = document.getElementById('uploadBtn');
@@ -382,7 +768,6 @@
     });
 
     audioFile.addEventListener('change', handleFileSelect);
-
     segmentDurationInput.addEventListener('input', updatePreview);
     overlapDurationInput.addEventListener('input', updatePreview);
 
@@ -390,15 +775,15 @@
       if (audioFile.files.length > 0) {
         selectedFile = audioFile.files[0];
 
-        // Get audio duration
         const audio = new Audio();
         audio.src = URL.createObjectURL(selectedFile);
 
         audio.addEventListener('loadedmetadata', () => {
           audioDuration = Math.floor(audio.duration);
           uploadArea.innerHTML = `
-                        <p>✓ ${selectedFile.name}</p>
-                        <p class="hint">Duration: ${formatTime(audioDuration)}</p>
+                        <div class="upload-icon">✅</div>
+                        <p>${selectedFile.name}</p>
+                        <p class="hint">Duration: ${formatTime(audioDuration)} <span class="badge">READY</span></p>
                     `;
           uploadBtn.disabled = false;
           updatePreview();
@@ -418,7 +803,7 @@
 
       if (overlapDuration >= segmentDuration) {
         previewArea.style.display = 'block';
-        previewContent.innerHTML = '<p style="color: #d32f2f;">⚠️ Overlap must be less than segment duration!</p>';
+        previewContent.innerHTML = '<p style="color: #d32f2f; font-weight: 600;">⚠️ Overlap must be less than segment duration!</p>';
         uploadBtn.disabled = true;
         return;
       }
@@ -426,14 +811,14 @@
       const segments = calculateSegments(audioDuration, segmentDuration, overlapDuration);
 
       previewArea.style.display = 'block';
-      let html = `<p style="margin-bottom: 8px;"><strong>${segments.length} segments</strong> will be created:</p>`;
+      let html = `<p style="margin-bottom: 12px; font-weight: 600;">Creating <strong style="color: #667eea;">${segments.length} segments</strong></p>`;
 
-      segments.slice(0, 5).forEach((seg, i) => {
+      segments.slice(0, 6).forEach((seg, i) => {
         html += `<div class="preview-item">Part ${i + 1}: ${formatTime(seg.start)} → ${formatTime(seg.start + seg.duration)}</div>`;
       });
 
-      if (segments.length > 5) {
-        html += `<div class="preview-item">... and ${segments.length - 5} more</div>`;
+      if (segments.length > 6) {
+        html += `<div class="preview-item" style="color: #667eea; font-weight: 600;">+ ${segments.length - 6} more segments</div>`;
       }
 
       previewContent.innerHTML = html;
@@ -489,7 +874,17 @@
       formData.append('overlapDuration', overlapDuration);
 
       uploadBtn.disabled = true;
-      statusDiv.innerHTML = '<div class="status processing"><div class="loader"></div><p>Processing audio... This may take a moment.</p></div>';
+      statusDiv.innerHTML = `
+                <div class="status processing">
+                    <div class="loader-container">
+                        <div class="loader"></div>
+                        <p>Processing your audio file...</p>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 70%"></div>
+                    </div>
+                </div>
+            `;
       resultsDiv.innerHTML = '';
 
       try {
@@ -501,37 +896,43 @@
         const data = await response.json();
 
         if (data.success) {
-          statusDiv.innerHTML = '<div class="status success">✓ Audio split successfully!</div>';
+          statusDiv.innerHTML = '<div class="status success">✅ Audio split successfully!</div>';
 
           let resultsHTML = '<div class="results">';
-          resultsHTML += '<h2>📦 Download Parts</h2>';
+          resultsHTML += '<h2>📦 Download Your Parts</h2>';
           resultsHTML += `<div class="results-info">
-                        <strong>Total Duration:</strong> ${formatTime(data.duration)} | 
-                        <strong>Parts Created:</strong> ${data.parts.length} | 
-                        <strong>Segment Length:</strong> ${data.settings.segmentDuration}s | 
-                        <strong>Overlap:</strong> ${data.settings.overlapDuration}s
+                        <span>⏱️ <strong>Duration:</strong> ${formatTime(data.duration)}</span>
+                        <span>📊 <strong>Parts:</strong> ${data.parts.length}</span>
+                        <span>✂️ <strong>Segment:</strong> ${data.settings.segmentDuration}s</span>
+                        <span>🔗 <strong>Overlap:</strong> ${data.settings.overlapDuration}s</span>
                     </div>`;
 
+          resultsHTML += '<div class="parts-container">';
           data.parts.forEach((part, index) => {
             const startTime = part.startTime;
             const endTime = Math.min(startTime + data.settings.segmentDuration, data.duration);
             resultsHTML += `
                             <div class="part-item">
                                 <div class="part-info">
-                                    <div class="part-name">${part.name}</div>
-                                    <div class="part-time">${formatTime(startTime)} → ${formatTime(endTime)}</div>
+                                    <div class="part-number">${index + 1}</div>
+                                    <div class="part-details">
+                                        <div class="part-name">${part.name}</div>
+                                        <div class="part-time">🕐 ${formatTime(startTime)} → ${formatTime(endTime)}</div>
+                                    </div>
                                 </div>
-                                <a href="${part.path}" class="download-btn" download>⬇ Download</a>
+                                <a href="${part.path}" class="download-btn" download>
+                                    ⬇️ Download
+                                </a>
                             </div>
                         `;
           });
-          resultsHTML += '</div>';
+          resultsHTML += '</div></div>';
           resultsDiv.innerHTML = resultsHTML;
         } else {
-          statusDiv.innerHTML = `<div class="status error">✗ Error: ${data.message}</div>`;
+          statusDiv.innerHTML = `<div class="status error">❌ Error: ${data.message}</div>`;
         }
       } catch (error) {
-        statusDiv.innerHTML = `<div class="status error">✗ Error: ${error.message}</div>`;
+        statusDiv.innerHTML = `<div class="status error">❌ Error: ${error.message}</div>`;
       } finally {
         uploadBtn.disabled = false;
       }
